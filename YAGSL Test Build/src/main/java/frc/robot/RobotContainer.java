@@ -18,10 +18,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -30,6 +33,9 @@ import java.io.File;
  */
 public class RobotContainer
 {
+
+  //Create Auto Chooser
+  private final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -46,6 +52,11 @@ public class RobotContainer
    */
   public RobotContainer()
   {
+    //Build Auto-Chooser
+    //Default auto does nothing, change later if you want a specific default auto
+    autoChooser = AutoBuilder.buildAutoChooser("Do Nothing");
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     // Configure the trigger bindings
     configureBindings();
 
@@ -120,7 +131,8 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("New Path", true);
+    //return drivebase.getAutonomousCommand(autoChooser.getSelected().toString(), true);
+    return autoChooser.getSelected();
   }
 
   public void setDriveMode()
